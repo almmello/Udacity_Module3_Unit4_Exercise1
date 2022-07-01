@@ -98,6 +98,24 @@ class BookTestCase(unittest.TestCase):
         self.assertEqual(data["success"], False)
         self.assertEqual(data["message"], "unprocessable")
 
+    def test_get_book_search_with_results(self):
+        res = self.client().post("/books", json={"search": "Novel"})
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data["success"], True)
+        self.assertTrue(data["total_books"])
+        self.assertEqual(len(data["books"]), 4)
+
+    def test_get_book_search_without_results(self):
+        res = self.client().post("/books", json={"search": "applejacks"})
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data["success"], True)
+        self.assertEqual(data["total_books"], 0)
+        self.assertEqual(len(data["books"]), 0)
+
 
 
 # Make the tests conveniently executable
